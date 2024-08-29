@@ -109,6 +109,7 @@
         </tbody>
     </table>
 
+
     <script>
         const displayBtn = document.getElementById('displayBtn');
         const output = document.getElementById('output');
@@ -117,7 +118,7 @@
         const copyBtn = document.getElementById('copyBtn');
         const expiredPinsBody = document.getElementById('expiredPinsBody');
 
-        const PIN_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const PIN_INTERVAL = 20 * 1000; // 20 seconds
         const BATCH_SIZE = 20; // Generate 20 PINs in advance
 
         let currentPinIndex = 0;
@@ -226,7 +227,7 @@
         // Initialize pins on page load
         initializePins();
 
-        // Update current PIN and expired PINs table every 24 hours
+        // Update current PIN and expired PINs table every 20 seconds
         setInterval(() => {
             getCurrentPin();
             output.textContent = '****';
@@ -236,7 +237,7 @@
         setInterval(() => {
             localStorage.setItem('pins', JSON.stringify(pins));
             localStorage.setItem('expiredPins', JSON.stringify(expiredPins.slice(0, 50)));
-        }, 30 * 60 * 1000); // Every 30 hours
+        }, 5 * 1000); // Every minute
     </script>
 </body>
 </html>
