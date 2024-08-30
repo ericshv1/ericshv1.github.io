@@ -84,7 +84,6 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-
         #countdown {
             color: red;
             font-size: 18px;
@@ -125,100 +124,53 @@
         const input = document.getElementById('input');
         const displayOutput = document.getElementById('displayOutput');
         const copyBtn = document.getElementById('copyBtn');
-        const expiredPinsBody = document.getElementById('expiredPinsBody');
         const countdown = document.getElementById('countdown');
 
-        const PIN_INTERVAL = 24 * 60 * 60 * 1000; // 20 seconds in milliseconds for testing
-        const BATCH_SIZE = 20; // Generate 20 PINs in advance
+        function getNext9pmET() {
+            const now = new Date();
+            // Calculate the current time in UTC
+            const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+            // Determine if it's currently DST in the Eastern Time Zone
+            const isDST = now.getTimezoneOffset() < utcNow.getTimezoneOffset();
+            // Calculate the correct UTC offset for Eastern Time (Standard or Daylight)
+            const estOffset = -5; // Eastern Standard Time (UTC-5)
+            const edtOffset = -4; // Eastern Daylight Time (UTC-4)
+            const etOffset = isDST ? edtOffset : estOffset;
 
-        let currentPinIndex = 0;
-        let pins = [];
-        let expiredPins = [];
-        let lastUpdateTime = Date.now();
-        let countdownEndTime = Date.now() + PIN_INTERVAL; // Initialize countdown end time
-        let currentPin = getCurrentPin(); // Store the current PIN
+            // Calculate current Eastern Time by adjusting UTC time by the offset
+            const currentET = new Date(utcNow.getTime() + etOffset * 60 * 60 * 1000);
+            const next9pmET = new Date(currentET);
 
-        function generatePin() {
-            return Math.floor(1000 + Math.random() * 9000).toString();
-        }
+            // Set the time to 9 PM Eastern Time (21:00)
+            next9pmET.setHours(21, 0, 0, 0); 
 
-        function generatePinBatch() {
-            const now = Date.now();
-            pins = Array.from({length: BATCH_SIZE}, (_, i) => ({
-                pin: generatePin(),
-                expiresAt: now + (i + 1) * PIN_INTERVAL
-            }));
-            localStorage.setItem('pins', JSON.stringify(pins));
-            localStorage.setItem('lastGenerated', now.toString());
-        }
-
-        function getCurrentPin() {
-            const now = Date.now();
-            updateExpiredPins(now);
-            
-            if (currentPinIndex >= pins.length) {
-                generatePinBatch();
-                currentPinIndex = 0;
+            // If it's already past 9 PM ET today, set to 9 PM the next day
+            if (currentET >= next9pmET) {
+                next9pmET.setDate(next9pmET.getDate() + 1);
             }
 
-            return pins[currentPinIndex].pin;
+            return next9pmET;
         }
 
-        function updateExpiredPins(now) {
-            const missedIntervals = Math.floor((now - lastUpdateTime) / PIN_INTERVAL);
-            
-            for (let i = 0; i < missedIntervals; i++) {
-                const expirationTime = lastUpdateTime + (i + 1) * PIN_INTERVAL;
-                if (currentPinIndex < pins.length) {
-                    expiredPins.unshift({
-                        pin: pins[currentPinIndex].pin,
-                        expiresAt: expirationTime
-                    });
-                    currentPinIndex++;
-                } else {
-                    // If we've run out of pins, generate a new batch
-                    generatePinBatch();
-                    currentPinIndex = 0;
-                    expiredPins.unshift({
-                        pin: pins[currentPinIndex].pin,
-                        expiresAt: expirationTime
-                    });
-                    currentPinIndex++;
-                }
-            }
+        function updateCountdown() {
+            const next9pmET = getNext9pmET();
+            const now = new Date();
+            const timeLeft = next9pmET - now;
 
-            lastUpdateTime = now - (now % PIN_INTERVAL);
-            updateExpiredPinsTable();
-        }
-
-        function updateExpiredPinsTable() {
-            expiredPinsBody.innerHTML = '';
-            expiredPins.slice(0, 50).forEach(expiredPin => {
-                const row = expiredPinsBody.insertRow();
-                const dateCell = row.insertCell(0);
-                const pinCell = row.insertCell(1);
-                dateCell.textContent = new Date(expiredPin.expiresAt).toLocaleString();
-                pinCell.textContent = expiredPin.pin;
-            });
-        }
-
-        function initializePins() {
-            const storedPins = localStorage.getItem('pins');
-            const lastGenerated = localStorage.getItem('lastGenerated');
-
-            if (storedPins && lastGenerated) {
-                pins = JSON.parse(storedPins);
-                lastUpdateTime = parseInt(lastGenerated);
+            if (timeLeft <= 0) {
+                countdown.textContent = 'PIN has changed.';
+                currentPin = generateDailyPin(); // Regenerate the PIN
+                resetCountdown(); // Reset countdown to next 9 PM ET
             } else {
-                generatePinBatch();
-                lastUpdateTime = Date.now();
+                countdown.textContent = `Next PIN change in: ${formatTime(timeLeft)}`;
             }
-
-            updateExpiredPins(Date.now());
-            currentPin = getCurrentPin(); // Initialize the current pin
         }
 
-      function formatTime(ms) {
+        function resetCountdown() {
+            countdownEndTime = getNext9pmET().getTime();
+        }
+
+        function formatTime(ms) {
             const totalSeconds = Math.floor(ms / 1000);
             const hours = Math.floor(totalSeconds / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -226,20 +178,29 @@
             return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
 
-        function updateCountdown() {
-            const now = Date.now();
-            const timeLeft = countdownEndTime - now;
-
-            if (timeLeft <= 0) {
-                countdown.textContent = 'PIN has changed.';
-                return;
-            }
-
-            countdown.textContent = `Next PIN change in: ${formatTime(timeLeft)}`;
+        function initializePins() {
+            currentPin = generateDailyPin(); // Initialize the current pin
+            output.textContent = '****'; // Always display stars
+            resetCountdown();
         }
 
-        function resetCountdown() {
-            countdownEndTime = Date.now() + PIN_INTERVAL; // Reset to 24 hours from now
+        function generateDailyPin() {
+            const next9pmET = getNext9pmET();
+            const current9pmET = new Date(next9pmET.getTime() - 24 * 60 * 60 * 1000);
+
+            const year = current9pmET.getUTCFullYear();
+            const month = current9pmET.getUTCMonth() + 1;
+            const day = current9pmET.getUTCDate();
+            const dateValue = year * 10000 + month * 100 + day;
+
+            let scrambled = dateValue ^ ((dateValue << 13) | (dateValue >>> 19));
+            scrambled = Math.abs(Math.sin(scrambled) * 1000000) | 0;
+            scrambled = (scrambled % 10000 + 10000) % 10000;
+            const prime = 7919;
+            scrambled = scrambled ^ prime;
+
+            const pin = String(scrambled).padStart(4, '0').slice(-4);
+            return pin;
         }
 
         displayBtn.addEventListener('click', () => {
@@ -261,24 +222,11 @@
             });
         });
 
-        // Initialize pins on page load
         initializePins();
 
-        // Update current PIN and expired PINs table every 20 seconds for testing
-        setInterval(() => {
-            currentPin = getCurrentPin(); // Update currentPin
-            output.textContent = '****'; // Placeholder text
-            resetCountdown(); // Reset countdown
-        }, PIN_INTERVAL);
-
-        // Periodically save state to localStorage every 5 seconds for testing
-        setInterval(() => {
-            localStorage.setItem('pins', JSON.stringify(pins));
-            localStorage.setItem('expiredPins', JSON.stringify(expiredPins.slice(0, 50)));
-        }, 10 * 60 * 1000); // Every 5 seconds
-
-        // Update the countdown timer every second
+        // Update the countdown every second
         setInterval(updateCountdown, 1000);
+
     </script>
 </body>
 </html>
