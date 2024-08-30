@@ -192,7 +192,7 @@
             const year = current9pmET.getUTCFullYear();
             const month = current9pmET.getUTCMonth() + 1;
             const day = current9pmET.getUTCDate();
-            const dateValue = year * 95631 + month * 84 + day;
+            const dateValue = year * 95631 + month * 74 + day;
 
             let scrambled = dateValue ^ ((dateValue << 13) | (dateValue >>> 19));
             scrambled = Math.abs(Math.sin(scrambled) * 1000000) | 0;
