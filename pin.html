@@ -84,6 +84,14 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+
+        #countdown {
+            color: red;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -109,6 +117,7 @@
         </tbody>
     </table>
 
+    <div id="countdown">Next PIN change in: 00:20:00</div>
 
     <script>
         const displayBtn = document.getElementById('displayBtn');
@@ -117,14 +126,17 @@
         const displayOutput = document.getElementById('displayOutput');
         const copyBtn = document.getElementById('copyBtn');
         const expiredPinsBody = document.getElementById('expiredPinsBody');
+        const countdown = document.getElementById('countdown');
 
-        const PIN_INTERVAL = 20 * 1000; // 20 seconds
+        const PIN_INTERVAL = 20 * 1000; // 20 seconds in milliseconds for testing
         const BATCH_SIZE = 20; // Generate 20 PINs in advance
 
         let currentPinIndex = 0;
         let pins = [];
         let expiredPins = [];
         let lastUpdateTime = Date.now();
+        let countdownEndTime = Date.now() + PIN_INTERVAL; // Initialize countdown end time
+        let currentPin = getCurrentPin(); // Store the current PIN
 
         function generatePin() {
             return Math.floor(1000 + Math.random() * 9000).toString();
@@ -203,12 +215,36 @@
             }
 
             updateExpiredPins(Date.now());
+            currentPin = getCurrentPin(); // Initialize the current pin
+        }
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function updateCountdown() {
+            const now = Date.now();
+            const timeLeft = countdownEndTime - now;
+
+            if (timeLeft <= 0) {
+                countdown.textContent = 'PIN has changed.';
+                return;
+            }
+
+            countdown.textContent = `Next PIN change in: ${formatTime(timeLeft)}`;
+        }
+
+        function resetCountdown() {
+            countdownEndTime = Date.now() + PIN_INTERVAL; // Reset to 20 seconds from now
         }
 
         displayBtn.addEventListener('click', () => {
             const phrase = input.value.trim().toLowerCase();
             if (phrase === 'hello my name is bob.') {
-                displayOutput.textContent = getCurrentPin();
+                displayOutput.textContent = currentPin;
                 displayOutput.classList.remove('error');
             } else {
                 displayOutput.textContent = 'Wrong input was typed.';
@@ -217,7 +253,7 @@
         });
 
         copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(getCurrentPin()).then(() => {
+            navigator.clipboard.writeText(currentPin).then(() => {
                 alert('PIN copied to clipboard!');
             }).catch(err => {
                 console.error('Failed to copy PIN: ', err);
@@ -227,17 +263,21 @@
         // Initialize pins on page load
         initializePins();
 
-        // Update current PIN and expired PINs table every 20 seconds
+        // Update current PIN and expired PINs table every 20 seconds for testing
         setInterval(() => {
-            getCurrentPin();
-            output.textContent = '****';
+            currentPin = getCurrentPin(); // Update currentPin
+            output.textContent = '****'; // Placeholder text
+            resetCountdown(); // Reset countdown
         }, PIN_INTERVAL);
 
-        // Periodically save state to localStorage
+        // Periodically save state to localStorage every 5 seconds for testing
         setInterval(() => {
             localStorage.setItem('pins', JSON.stringify(pins));
             localStorage.setItem('expiredPins', JSON.stringify(expiredPins.slice(0, 50)));
-        }, 5 * 1000); // Every minute
+        }, 5 * 1000); // Every 5 seconds
+
+        // Update the countdown timer every second
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
