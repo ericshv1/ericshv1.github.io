@@ -11,12 +11,18 @@
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #ffcccc, #ff99cc);
             color: #333;
+            scroll-behavior: smooth; /* Smooth scroll transition */
         }
 
         header {
             background-color: #ff6699;
             padding: 20px;
             text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: transform 0.3s ease-in-out;
         }
 
         header h1 {
@@ -42,7 +48,7 @@
 
         /* Section Styles */
         section {
-            padding: 50px;
+            padding: 100px 50px 50px 50px; /* Added padding to account for fixed header */
             text-align: center;
         }
 
@@ -118,9 +124,7 @@
             color: white;
             text-align: center;
             padding: 20px;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+            position: relative; /* No longer fixed to the bottom */
         }
 
         /* Chocolate Donuts Background */
@@ -140,7 +144,7 @@
     </style>
 </head>
 <body>
-    <header>
+    <header id="header">
         <h1>Ruby's Choco</h1>
         <nav>
             <ul>
@@ -207,8 +211,26 @@
     </footer>
 
     <script>
+        // Smooth scroll is handled by CSS scroll-behavior: smooth
+
+        // Sliding Header Logic
+        let lastScrollTop = 0;
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', function() {
+            let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScroll > lastScrollTop) {
+                // Scroll Down - Hide Header
+                header.style.transform = "translateY(-100%)";
+            } else {
+                // Scroll Up - Show Header
+                header.style.transform = "translateY(0)";
+            }
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // For Mobile or negative scrolling
+        });
+
         function autocompleteAddress() {
-            // This is where you would implement the Google Places API or similar for address autocompletion
+            // Placeholder for autocomplete functionality
             console.log('Autocomplete feature in progress...');
         }
     </script>
