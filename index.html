@@ -4,8 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruby's Choco</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #ffccff, #ff99cc);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-image: url('your-donut-image-url'); /* Add your donut image URL here */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        header {
+            background: #ff66b2;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #ff3399;
+        }
+
+        .menu-item {
+            margin-bottom: 20px;
+        }
+
+        .menu-item h3 {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #ff66b2;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -64,5 +129,14 @@
     <footer>
         <p>&copy; 2024 Ruby's Choco. All rights reserved.</p>
     </footer>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Thank you for your message! We will get back to you soon.');
+        });
+
+        // Address autocomplete functionality can be implemented using Google Places API or similar service.
+    </script>
 </body>
 </html>
