@@ -3,231 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIN Generator 3000 V2.0</title>
-    <link rel="icon" href="https://static-00.iconduck.com/assets.00/slightly-smiling-face-emoji-2048x2048-15pbfzym.png">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-        h1, h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 10px 0;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #output, #displayOutput {
-            margin: 15px 0;
-            padding: 15px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            min-height: 20px;
-            background-color: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        #input {
-            width: 100%;
-            margin: 15px 0;
-            padding: 10px;
-            border: 1px solid #bdc3c7;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .error {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .output-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        #copyBtn {
-            background-color: #2ecc71;
-        }
-        #copyBtn:hover {
-            background-color: #27ae60;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-        th, td {
-            border: 1px solid #bdc3c7;
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #3498db;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        #countdown {
-            color: red;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            text-align: right;
-        }
-    </style>
+    <title>Ruby's Choco</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
-    <h1>PIN Generator 3000 V2.0</h1>
-    <div class="output-container">
-        <div id="output">****</div>
-        <button id="copyBtn">Copy PIN</button>
-    </div>
-    <br><br>
-    <input type="text" id="input" placeholder="Enter the phrase here">
-    <button id="displayBtn">Display PIN</button>
-    <div id="displayOutput"></div>
+    <header>
+        <h1>Ruby's Choco</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#menu">Menu</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <h2>Expired PINs</h2>
-    <table id="expiredPinsTable">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Expired PIN</th>
-            </tr>
-        </thead>
-        <tbody id="expiredPinsBody">
-        </tbody>
-    </table>
+    <section id="home">
+        <h2>Welcome to Ruby's Choco</h2>
+        <p>Indulge in the finest chocolate cakes and donuts, crafted with love and passion.</p>
+    </section>
 
-    <div id="countdown">Next PIN change in: 24:00:00</div>
+    <section id="about">
+        <h2>About Me</h2>
+        <p>I have been passionate about baking since I was 5 years old. My journey began in my grandmother's kitchen, where I learned the art of creating delicious desserts. Over the years, my love for baking has only grown stronger, leading me to create Ruby's Choco...</p>
+        <p>Every cake and donut is made with the finest ingredients, and I take pride in every creation. My goal is to bring joy to your celebrations with my delightful treats...</p>
+    </section>
 
-    <script>
-        const displayBtn = document.getElementById('displayBtn');
-        const output = document.getElementById('output');
-        const input = document.getElementById('input');
-        const displayOutput = document.getElementById('displayOutput');
-        const copyBtn = document.getElementById('copyBtn');
-        const countdown = document.getElementById('countdown');
+    <section id="menu">
+        <h2>Menu</h2>
+        <div class="menu-item">
+            <h3>Chocolate Cake - $25</h3>
+            <p>Description: A rich and moist chocolate cake made with the finest cocoa.</p>
+            <p>Ingredients: Flour, cocoa powder, sugar, eggs, butter, vanilla extract.</p>
+        </div>
+        <div class="menu-item">
+            <h3>Chocolate Glazed Donuts - $15</h3>
+            <p>Description: Soft and fluffy donuts covered in a decadent chocolate glaze.</p>
+            <p>Ingredients: Flour, sugar, eggs, milk, cocoa powder, chocolate glaze.</p>
+        </div>
+        <!-- Add more menu items here -->
+    </section>
 
-        function getNext9pmET() {
-            const now = new Date();
-            // Calculate the current time in UTC
-            const utcNow = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
-            // Determine if it's currently DST in the Eastern Time Zone
-            const isDST = now.getTimezoneOffset() < utcNow.getTimezoneOffset();
-            // Calculate the correct UTC offset for Eastern Time (Standard or Daylight)
-            const estOffset = -5; // Eastern Standard Time (UTC-5)
-            const edtOffset = -4; // Eastern Daylight Time (UTC-4)
-            const etOffset = isDST ? edtOffset : estOffset;
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <form id="contact-form">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            <label for="address">Address:</label>
+            <input type="text" id="address" placeholder="Start typing your address..." required>
+            <label for="message">Question/Concern:</label>
+            <textarea id="message" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
 
-            // Calculate current Eastern Time by adjusting UTC time by the offset
-            const currentET = new Date(utcNow.getTime() + etOffset * 60 * 60 * 1000);
-            const next9pmET = new Date(currentET);
-
-            // Set the time to 9 PM Eastern Time (21:00)
-            next9pmET.setHours(21, 0, 0, 0); 
-
-            // If it's already past 9 PM ET today, set to 9 PM the next day
-            if (currentET >= next9pmET) {
-                next9pmET.setDate(next9pmET.getDate() + 1);
-            }
-
-            return next9pmET;
-        }
-
-        function updateCountdown() {
-            const next9pmET = getNext9pmET();
-            const now = new Date();
-            const timeLeft = next9pmET - now;
-
-            if (timeLeft <= 0) {
-                countdown.textContent = 'PIN has changed.';
-                currentPin = generateDailyPin(); // Regenerate the PIN
-                resetCountdown(); // Reset countdown to next 9 PM ET
-            } else {
-                countdown.textContent = `Next PIN change in: ${formatTime(timeLeft)}`;
-            }
-        }
-
-        function resetCountdown() {
-            countdownEndTime = getNext9pmET().getTime();
-        }
-
-        function formatTime(ms) {
-            const totalSeconds = Math.floor(ms / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        }
-
-        function initializePins() {
-            currentPin = generateDailyPin(); // Initialize the current pin
-            output.textContent = '****'; // Always display stars
-            resetCountdown();
-        }
-
-        function generateDailyPin() {
-            const next9pmET = getNext9pmET();
-            const current9pmET = new Date(next9pmET.getTime() - 24 * 60 * 60 * 1000);
-
-            const year = current9pmET.getUTCFullYear();
-            const month = current9pmET.getUTCMonth() + 1;
-            const day = current9pmET.getUTCDate();
-            const dateValue = year * 95631 + month * 74 + day;
-
-            let scrambled = dateValue ^ ((dateValue << 13) | (dateValue >>> 19));
-            scrambled = Math.abs(Math.sin(scrambled) * 1000000) | 0;
-            scrambled = (scrambled % 10000 + 10000) % 10000;
-            const prime = 7919;
-            scrambled = scrambled ^ prime;
-
-            const pin = String(scrambled).padStart(4, '0').slice(-4);
-            return pin;
-        }
-
-        displayBtn.addEventListener('click', () => {
-            const phrase = input.value.trim().toLowerCase();
-            if (phrase === 'i swear that i have finished everything i need to continue.') {
-                displayOutput.textContent = currentPin;
-                displayOutput.classList.remove('error');
-            } else {
-                displayOutput.textContent = 'Wrong input was typed.';
-                displayOutput.classList.add('error');
-            }
-        });
-
-        copyBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(currentPin).then(() => {
-                alert('PIN copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy PIN: ', err);
-            });
-        });
-
-        initializePins();
-
-        // Update the countdown every second
-        setInterval(updateCountdown, 1000);
-
-    </script>
+    <footer>
+        <p>&copy; 2024 Ruby's Choco. All rights reserved.</p>
+    </footer>
 </body>
 </html>
