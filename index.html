@@ -5,31 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruby's Choco</title>
     <style>
+        /* General Style */
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(to bottom right, #ffccff, #ff99cc);
-            color: #333;
             margin: 0;
-            padding: 0;
-            background-image: url('your-donut-image-url'); /* Add your donut image URL here */
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffcccc, #ff99cc);
+            color: #333;
         }
 
         header {
-            background: #ff66b2;
+            background-color: #ff6699;
             padding: 20px;
             text-align: center;
         }
 
         header h1 {
-            margin: 0;
-            font-size: 2.5em;
+            color: white;
+            font-size: 2.5rem;
         }
 
         nav ul {
-            list-style: none;
+            list-style-type: none;
             padding: 0;
         }
 
@@ -41,18 +37,30 @@
         nav ul li a {
             color: white;
             text-decoration: none;
+            font-weight: bold;
         }
 
+        /* Section Styles */
         section {
-            padding: 20px;
-            margin: 20px;
-            border-radius: 10px;
-            background: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 50px;
+            text-align: center;
         }
 
-        h2 {
-            color: #ff3399;
+        section#home .intro h2 {
+            font-size: 2rem;
+            color: #cc0066;
+        }
+
+        section#about p {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        section#menu h2 {
+            font-size: 2rem;
+            color: #cc0066;
+            margin-bottom: 30px;
         }
 
         .menu-item {
@@ -60,15 +68,74 @@
         }
 
         .menu-item h3 {
-            font-size: 1.5em;
-            font-weight: bold;
+            font-size: 1.5rem;
+            color: #b30047;
+            margin-bottom: 10px;
+        }
+
+        .menu-item p {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        section#contact form {
+            display: flex;
+            flex-direction: column;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        section#contact form label {
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        section#contact form input, 
+        section#contact form textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        section#contact form button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #cc0066;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        section#contact form button:hover {
+            background-color: #b30047;
         }
 
         footer {
-            text-align: center;
-            padding: 10px;
-            background: #ff66b2;
+            background-color: #ff6699;
             color: white;
+            text-align: center;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        /* Chocolate Donuts Background */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('donut.png'); /* Replace with chocolate donut image */
+            background-size: 150px 150px;
+            background-repeat: repeat;
+            opacity: 0.2;
+            z-index: -1;
         }
     </style>
 </head>
@@ -86,42 +153,51 @@
     </header>
 
     <section id="home">
-        <h2>Welcome to Ruby's Choco</h2>
-        <p>Indulge in the finest chocolate cakes and donuts, crafted with love and passion.</p>
+        <div class="intro">
+            <h2>Welcome to Ruby's Choco</h2>
+            <p>Your favorite destination for freshly baked chocolate cakes and treats. Crafted with passion, served with love.</p>
+        </div>
     </section>
 
     <section id="about">
         <h2>About Me</h2>
-        <p>I have been passionate about baking since I was 5 years old. My journey began in my grandmother's kitchen, where I learned the art of creating delicious desserts. Over the years, my love for baking has only grown stronger, leading me to create Ruby's Choco...</p>
-        <p>Every cake and donut is made with the finest ingredients, and I take pride in every creation. My goal is to bring joy to your celebrations with my delightful treats...</p>
+        <p>I’ve loved baking ever since I was 5. Growing up, I found joy in crafting delicious desserts and sharing them with family and friends. That passion stayed with me through my childhood and evolved into what Ruby's Choco is today. Baking is not just a hobby for me; it’s an art and a way to bring happiness to those around me. Every cake, cookie, and treat I create is crafted with care, precision, and love.</p>
+
+        <p>I remember the first time I tried baking a chocolate cake with my grandmother, and ever since then, I knew this was my calling. Today, I’m thrilled to share my passion with everyone through Ruby's Choco. Whether you’re celebrating a special occasion or just craving a sweet treat, I’m here to make your day a little bit sweeter.</p>
     </section>
 
     <section id="menu">
-        <h2>Menu</h2>
+        <h2>Our Menu</h2>
         <div class="menu-item">
-            <h3>Chocolate Cake - $25</h3>
-            <p>Description: A rich and moist chocolate cake made with the finest cocoa.</p>
-            <p>Ingredients: Flour, cocoa powder, sugar, eggs, butter, vanilla extract.</p>
+            <h3>1. Classic Chocolate Cake - $15</h3>
+            <p>Rich, moist chocolate cake topped with a creamy chocolate ganache.</p>
         </div>
         <div class="menu-item">
-            <h3>Chocolate Glazed Donuts - $15</h3>
-            <p>Description: Soft and fluffy donuts covered in a decadent chocolate glaze.</p>
-            <p>Ingredients: Flour, sugar, eggs, milk, cocoa powder, chocolate glaze.</p>
+            <h3>2. Double Chocolate Muffins - $10</h3>
+            <p>Fluffy muffins packed with chocolate chunks and topped with a crispy chocolate glaze.</p>
+        </div>
+        <div class="menu-item">
+            <h3>3. Chocolate Glazed Donuts - $12</h3>
+            <p>Soft and chewy donuts dipped in a rich chocolate glaze.</p>
         </div>
         <!-- Add more menu items here -->
     </section>
 
     <section id="contact">
         <h2>Contact Us</h2>
-        <form id="contact-form">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
-            <label for="address">Address:</label>
-            <input type="text" id="address" placeholder="Start typing your address..." required>
-            <label for="message">Question/Concern:</label>
-            <textarea id="message" required></textarea>
+        <form id="contact-form" action="submit_form.php" method="POST">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" required oninput="autocompleteAddress()">
+
+            <label for="message">Question/Concern</label>
+            <textarea id="message" name="message" required></textarea>
+
             <button type="submit">Submit</button>
         </form>
     </section>
@@ -131,12 +207,10 @@
     </footer>
 
     <script>
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            alert('Thank you for your message! We will get back to you soon.');
-        });
-
-        // Address autocomplete functionality can be implemented using Google Places API or similar service.
+        function autocompleteAddress() {
+            // This is where you would implement the Google Places API or similar for address autocompletion
+            console.log('Autocomplete feature in progress...');
+        }
     </script>
 </body>
 </html>
